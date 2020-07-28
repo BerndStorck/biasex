@@ -1,0 +1,71 @@
+#! /bin/bash
+#
+# biasex, 2020-07-29
+#
+# Lists alls buildin commands for which there is also an external
+# implementation.
+#
+# Bernd Storck, https://www.facebook.com/BStLinux/
+#
+
+SCRIPT="biasex"
+VERSION="1.0.0"
+
+if [ "$(echo "$LANG" | cut -c 1-2)" == "de" ]; then
+	UILANG="Deutsch"
+	start_comment="Externe Implementierungen auch in die Bash eingebauter Kommandos:"
+else
+	UILANG="English"
+	start_comment="Found external implementations of bash buildin commands:"
+fi
+
+function hilfe () {
+# Displays program purpose and usage help.
+
+echo -e "\n \e[1;33m$SCRIPT\e[0m ($VERSION)\n"
+
+if [ "$UILANG" == "Deutsch" ]; then
+	echo -e " Das Programm sucht im PATH für jedes in die Bash eingebaute Kommando
+ nach einem gleichnamigen externen Kommando im System.
+
+ AUFRUF: Normalerweise ohne Parameter oder Argumente.
+
+	$SCRIPT
+
+ ZULÄSSIGE PARAMETER:
+
+	--help|-h|--hilf  Diese Hilfe anzeigen
+"
+else  # English help:
+
+	echo -e " Searchs for every bash buildin command in PATH for an
+ external command with the same name.
+
+ START: Normally without parameters or arguments.
+
+	$SCRIPT
+
+ POSSIBLE PARAMETERS:
+
+	--help|-h|--hilf  Show this help
+"
+fi
+}
+
+
+### main ###################
+case "$1" in
+	--help|-h|--hilf|-help)
+		hilfe
+		exit 0
+		;;
+esac
+
+echo -e "\n$start_comment\n"
+for i in $(compgen -b);
+do
+	type -a "$i" | grep -Eo '/.+'
+done
+echo
+
+exit 0

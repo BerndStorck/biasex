@@ -2,7 +2,7 @@
 
 Von Kommandos, die in die Bash eingebaut sind, gibt es teilweise eine zweite externe Implementierung. Das folgende Bild demonstriert dies für mein eigenes Linux-System für das Kommando `echo`.
 
-![[https://i.imgur.com/0i08Cuq.png](https://i.imgur.com/0i08Cuq.png)]()
+![Zwei Implementierungen des Kommandos echo](https://i.imgur.com/0i08Cuq.png)
 
 Beide Implementierungen reagieren weitgehend gleich, allerdings erkennt die bash-interne Implementierung ein Escape-Zeichen mehr als die externe Implementierung.
 

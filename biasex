@@ -1,6 +1,6 @@
 #! /bin/bash
 #
-# biasex, 2020-07-29
+# biasex 1.0.1, 2020-07-29
 #
 # Lists alls buildin commands for which there is also an external
 # implementation.
@@ -9,7 +9,7 @@
 #
 
 SCRIPT="biasex"
-VERSION="1.0.0"
+VERSION="1.0.1"
 
 if [ "$(echo "$LANG" | cut -c 1-2)" == "de" ]; then
 	UILANG="Deutsch"
@@ -64,7 +64,7 @@ esac
 echo -e "\n$start_comment\n"
 for i in $(compgen -b);
 do
-	type -a "$i" | grep -Eo '/.+'
+	type -af "$i" | grep -Eo '/.+'
 done
 echo
 

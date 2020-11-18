@@ -62,7 +62,7 @@ case "$1" in
 esac
 
 echo -e "\n$start_comment\n"
-type -af $(compgen -b) | grep -Eo '/.+'
+type -af $(compgen -b) | grep -Eo '/.+' | uniq
 echo
 
 exit 0

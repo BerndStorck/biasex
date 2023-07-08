@@ -1,68 +1,97 @@
 #! /bin/bash
 #
-# biasex 1.2.0, 2020-07-29
+# biasex 1.2.2, 2020-07-29, 2020-08-31, 2023-07-08
 #
-# Lists alls buildin commands for which there is also an external
+# Lists all buildin commands for which there is also an external
 # implementation.
 #
 # Bernd Storck, https://www.facebook.com/BStLinux/
 #
 
 SCRIPT="biasex"
-VERSION="1.2.0"
+VERSION="2.0.0"
 
-if [ "$(echo "$LANG" | cut -c 1-2)" == "de" ]; then
-	UILANG="Deutsch"
-	start_comment="Externe Implementierungen auch in die Bash eingebauter Kommandos:"
+if [ "${LANG:0:2}" = "de" ]; then
+  UI_LANGUAGE="Deutsch"
+  start_message="Externe Implementierungen auch in die Bash eingebauter Kommandos:"
+  selectiv_message="Externe Implementierungen von"
+  not_found="Es wurden keine passenden externen Kommandos gefunden."
 else
-	UILANG="English"
-	start_comment="Found external implementations of bash buildin commands:"
+  UI_LANGUAGE="English"
+  start_message="Found external implementations of bash buildin commands:"
+  selectiv_message="Found external implementations of"
+  not_found="No matching external commands found."
 fi
 
-function hilfe () {
+hilfe () {
 # Displays program purpose and usage help.
 
 echo -e "\n \e[1;33m$SCRIPT\e[0m ($VERSION)\n"
 
-if [ "$UILANG" == "Deutsch" ]; then
-	echo -e " Das Programm sucht im PATH für jedes in die Bash eingebaute Kommando
+if [ "$UI_LANGUAGE" = "Deutsch" ]; then
+ output=" Das Programm sucht im PATH für jedes in die Bash eingebaute Kommando
  nach einem gleichnamigen externen Kommando im System.
 
  AUFRUF: Normalerweise ohne Parameter oder Argumente.
 
-	$SCRIPT
+  $SCRIPT
 
  ZULÄSSIGE PARAMETER:
 
-	--help|-h|--hilf  Diese Hilfe anzeigen
+  --help|-h|--hilf  Diese Hilfe anzeigen
 "
+
 else  # English help:
 
-	echo -e " Searchs for every bash buildin command in PATH for an
+  output=" Searchs for every bash buildin command in PATH for an
  external command with the same name.
 
  START: Normally without parameters or arguments.
 
-	$SCRIPT
+  $SCRIPT
 
  POSSIBLE PARAMETERS:
 
-	--help|-h|--hilf  Show this help
+  --help|-h|--hilf  Show this help
 "
 fi
+
+printf "%s\n" "$output"
 }
 
 
 ### main ###################
-case "$1" in
-	--help|-h|--hilf|-help)
-		hilfe
-		exit 0
-		;;
-esac
+if [ "$#" -gt 0 ]; then
+  case "$1" in
+      --help|-h|--hilf|-help|-hilf)
+        hilfe
+        exit 0
+        ;;
+   *)
+     searched_commands="$*"
+     ;;
+  esac
+  
+  found_external_commands="$(type -ap $(compgen -b) )"
+  
+  for i in $searched_commands
+  do
+    output="${output}$(grep -w "$i" <<< "$found_external_commands")"
+  done
+  
+  if [ -n "$output" ]; then
+    printf "%s %s\n\n" "$selectiv_message" "$*"
+    printf "%s\n\n" "$output"
+  else
+    printf "%s\n" "$not_found"
+    exit 1
+  fi
 
-echo -e "\n$start_comment\n"
-type -af $(compgen -b) | grep -Eo '/.+'
-echo
+else
+  printf "\n%s\n\n" "$start_message"
+  type -ap $(compgen -b) 
+  printf "\n"
+
+fi
 
 exit 0

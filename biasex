@@ -1,6 +1,6 @@
 #! /bin/bash
 #
-# biasex 1.2.2, 2020-07-29, 2020-08-31, 2023-07-08
+# biasex 2.0.1, 2020-07-29, 2020-08-31, 2023-07-08
 #
 # Lists all buildin commands for which there is also an external
 # implementation.
@@ -9,7 +9,7 @@
 #
 
 SCRIPT="biasex"
-VERSION="2.0.0"
+VERSION="2.0.1"
 
 if [ "${LANG:0:2}" = "de" ]; then
   UI_LANGUAGE="Deutsch"
@@ -32,9 +32,14 @@ if [ "$UI_LANGUAGE" = "Deutsch" ]; then
  output=" Das Programm sucht im PATH für jedes in die Bash eingebaute Kommando
  nach einem gleichnamigen externen Kommando im System.
 
- AUFRUF: Normalerweise ohne Parameter oder Argumente.
+ AUFRUF: Normalerweise ohne Parameter oder Argumente
+         oder durch Angabe eines oder mehrerer Programmen.
 
   $SCRIPT
+
+ BEISPIELAUFRUF:
+ 
+  $SCRIPT test printf echo
 
  ZULÄSSIGE PARAMETER:
 
@@ -46,9 +51,14 @@ else  # English help:
   output=" Searchs for every bash buildin command in PATH for an
  external command with the same name.
 
- START: Normally without parameters or arguments.
+ START: Normally without parameters or arguments, 
+        or by specifying one or more programs.
 
   $SCRIPT
+  
+ SAMPLE CALL:
+
+   $SCRIPT test printf echo
 
  POSSIBLE PARAMETERS:
 
@@ -61,6 +71,7 @@ printf "%s\n" "$output"
 
 
 ### main ###################
+
 if [ "$#" -gt 0 ]; then
   case "$1" in
       --help|-h|--hilf|-help|-hilf)

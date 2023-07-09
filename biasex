@@ -1,6 +1,6 @@
 #! /bin/bash
 #
-# biasex 2.0.1, 2020-07-29, 2020-08-31, 2023-07-08
+# biasex 2.0.2, 2020-07-29, 2020-08-31, 2023-07-08
 #
 # Lists all buildin commands for which there is also an external
 # implementation.
@@ -9,17 +9,17 @@
 #
 
 SCRIPT="biasex"
-VERSION="2.0.1"
+VERSION="2.0.2"
 
 if [ "${LANG:0:2}" = "de" ]; then
   UI_LANGUAGE="Deutsch"
   start_message="Externe Implementierungen auch in die Bash eingebauter Kommandos:"
-  selectiv_message="Externe Implementierungen von"
+  selectiv_message="Externe Implementierungen von "
   not_found="Es wurden keine passenden externen Kommandos gefunden."
 else
   UI_LANGUAGE="English"
   start_message="Found external implementations of bash buildin commands:"
-  selectiv_message="Found external implementations of"
+  selectiv_message="Found external implementations of $*"
   not_found="No matching external commands found."
 fi
 
@@ -87,12 +87,18 @@ if [ "$#" -gt 0 ]; then
   
   for i in $searched_commands
   do
-    output="${output}$(grep -w "$i" <<< "$found_external_commands")"
+    output="${output}$(grep -w "$i" <<< "$found_external_commands")\n"
   done
   
   if [ -n "$output" ]; then
-    printf "%s %s\n\n" "$selectiv_message" "$*"
-    printf "%s\n\n" "$output"
+    printf "\n%s" "$selectiv_message"
+    for j in "$@"
+    do
+      program_list="${program_list}$j, "
+    done
+    program_list="${program_list%??}:"
+    printf "%s\n\n" "$program_list"
+    printf "%b\n" "$output"
   else
     printf "%s\n" "$not_found"
     exit 1

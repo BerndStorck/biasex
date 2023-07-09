@@ -1,6 +1,6 @@
 #! /bin/bash
 #
-# biasex 2.0.2, 2020-07-29, 2020-08-31, 2023-07-08
+# biasex 2.0.3, 2020-07-29, 2020-08-31, 2023-07-08, 2023-07-10
 #
 # Lists all buildin commands for which there is also an external
 # implementation.
@@ -9,7 +9,7 @@
 #
 
 SCRIPT="biasex"
-VERSION="2.0.2"
+VERSION="2.0.3"
 
 if [ "${LANG:0:2}" = "de" ]; then
   UI_LANGUAGE="Deutsch"
@@ -38,7 +38,7 @@ if [ "$UI_LANGUAGE" = "Deutsch" ]; then
   $SCRIPT
 
  BEISPIELAUFRUF:
- 
+
   $SCRIPT test printf echo
 
  ZULÄSSIGE PARAMETER:
@@ -51,11 +51,11 @@ else  # English help:
   output=" Searchs for every bash buildin command in PATH for an
  external command with the same name.
 
- START: Normally without parameters or arguments, 
+ START: Normally without parameters or arguments,
         or by specifying one or more programs.
 
   $SCRIPT
-  
+
  SAMPLE CALL:
 
    $SCRIPT test printf echo
@@ -82,15 +82,17 @@ if [ "$#" -gt 0 ]; then
      searched_commands="$*"
      ;;
   esac
-  
+
   found_external_commands="$(type -ap $(compgen -b) )"
-  
+
+  success=1
   for i in $searched_commands
   do
     output="${output}$(grep -w "$i" <<< "$found_external_commands")\n"
+    [ "$?" -eq 0 ] && success=0
   done
-  
-  if [ -n "$output" ]; then
+
+  if [ "$success" -eq 0 ]; then
     printf "\n%s" "$selectiv_message"
     for j in "$@"
     do
@@ -106,7 +108,7 @@ if [ "$#" -gt 0 ]; then
 
 else
   printf "\n%s\n\n" "$start_message"
-  type -ap $(compgen -b) 
+  type -ap $(compgen -b)
   printf "\n"
 
 fi
